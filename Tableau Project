@@ -1,0 +1,55 @@
+The project entails creating a dashboard with Tableau, a data visualisation tool.
+The project's data is derived from a real-time dataset of covid patients.
+
+Link for dataset----https://ourworldindata.org/covid-deaths
+
+Link For Tableau Project-- https://public.tableau.com/app/profile/gaurav.patil7479/viz/CovidDashboardProject_16305059944140/Dashboard1
+
+Steps taken in the creation of a project-
+1) Creating SQL queries to retrieve required data and inserting that data into an Excel workbook.
+2) Importing the Excel workbooks into Tableau as data source files
+3) Producing visualisations of all four datasheets on separate sheets
+4) Creating a final dashboard that incorporates the individual results
+
+
+--Queries used for Project
+
+
+-- 1) Global Numbers
+
+Select SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths,
+SUM(cast(new_deaths as int))/SUM(New_Cases)*100 as Death_Percentage
+From Portfolio_project..Covid_deaths
+where continent is not null 
+order by 1,2
+
+
+-- 2) Death Count Per Continent
+
+Select location, SUM(cast(new_deaths as int)) as Total_death_count
+From Portfolio_project..Covid_deaths
+--Where location like '%India%'
+Where continent is null 
+and location not in ('World', 'European Union', 'International')
+Group by location
+order by Total_death_count desc
+
+
+-- 3) Percent Population Infected Per Country
+
+Select Location, Population, MAX(total_cases) as Highest_infection_count,
+Max((total_cases/population))*100 as Percentage_of_population_infected
+From Portfolio_project..Covid_deaths
+--Where location like '%states%'
+Group by Location, Population
+order by Percentage_of_population_infected desc
+
+
+-- 4) Percent Population Infected 
+
+Select Location, Population,date, MAX(total_cases) as Highest_infection_count,
+Max((total_cases/population))*100 as Percentage_of_population_infected
+From Portfolio_project..Covid_deaths
+--Where location like '%India%'
+Group by Location, Population, date
+order by Percentage_of_population_infected desc
